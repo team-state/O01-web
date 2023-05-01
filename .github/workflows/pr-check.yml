@@ -18,8 +18,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install, build, and test
         run: |
-          npm ci
-          npm run lint
-          npm run build
+          yarn install --immutable --immutable-cache --check-cache
+          yarn lint
+          yarn build
         env:
           CI: true
