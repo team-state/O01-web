@@ -21,25 +21,8 @@ const authOptions: NextAuthOptions = {
       clientSecret,
     }),
   ],
-  pages: {
-    signIn: '/login',
-  },
   session: {
     strategy: 'jwt',
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        const id = user?.id;
-        return { ...token, id };
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { jti, iat, sub, exp, ...newToken } = token;
-      return { ...session, ...newToken };
-    },
   },
 };
 
