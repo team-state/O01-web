@@ -16,6 +16,17 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Generate Environment Variables File
+        run: |
+          echo "DATABASE_URL=$DATABASE_URL" >> .env
+          echo "NEXT_AUTH_SECRET=$NEXT_AUTH_SECRET" >> .env
+          echo "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" >> .env
+          echo "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" >> .env
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_AUTH_SECRET: ${{ secrets.NEXT_AUTH_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.HUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.HUB_CLIENT_SECRET }}
       - name: lint, build test
         run: |
           yarn install --immutable --immutable-cache --check-cache
