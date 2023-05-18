@@ -22,12 +22,16 @@ jobs:
           echo "NEXT_AUTH_SECRET=$NEXT_AUTH_SECRET" >> .env
           echo "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" >> .env
           echo "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" >> .env
+          echo "CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID" >> .env
+          echo "CLOUDFLARE_IMAGE_API_TOKEN=$CLOUDFLARE_IMAGE_API_TOKEN" >> .env
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_AUTH_SECRET: ${{ secrets.NEXT_AUTH_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.HUB_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.HUB_CLIENT_SECRET }}
-      - name: lint, build test
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_IMAGE_API_TOKEN: ${{ secrets.CLOUDFLARE_IMAGE_API_TOKEN }}
+      - name: Test Lint / Build
         run: |
           yarn install --immutable --immutable-cache --check-cache
           yarn lint
