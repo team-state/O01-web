@@ -1,7 +1,7 @@
 import createResponse from './createResponse';
 
 const withResponse = async <T>(
-  businessLogic: (request?: Request) => Promise<T>,
+  businessLogic: () => Promise<T>,
 ): Promise<Response> => {
   try {
     return createResponse<T>(await businessLogic(), 200);
