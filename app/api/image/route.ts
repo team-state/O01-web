@@ -25,6 +25,6 @@ const getImageUploadURL = async (): Promise<IImageAPIResponse> => {
   };
 };
 
-export const GET = async (request: Request) => {
-  return withResponse<IImageAPIResponse>(request, getImageUploadURL);
+export const GET = async () => {
+  return withResponse(getImageUploadURL);
 };

@@ -1,20 +1,10 @@
-const createResponse = <T>(
-  data: T,
-  status: number,
-  isError: boolean = false,
-) => {
-  return new Response(JSON.stringify({ success: !isError, data }), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-};
+import createResponse from './createResponse';
 
 const withResponse = async <T>(
-  request: Request,
-  businessLogic: (req: Request) => Promise<T>,
+  businessLogic: (request?: Request) => Promise<T>,
 ): Promise<Response> => {
   try {
-    return createResponse<T>(await businessLogic(request), 200);
+    return createResponse<T>(await businessLogic(), 200);
   } catch (e) {
     console.error(e);
     const errorMessage = e instanceof Error ? e.message : 'Unknown error';
