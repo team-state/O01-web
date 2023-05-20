@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const uploadImageToCF = async (file: File) => {
+const uploadImage = async (file: File) => {
   try {
     if (!file) {
       throw new Error('Please select a file');
@@ -25,4 +25,4 @@ const uploadImageToCF = async (file: File) => {
   }
 };
 
-export default uploadImageToCF;
+export default uploadImage;
