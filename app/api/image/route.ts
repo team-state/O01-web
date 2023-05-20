@@ -1,4 +1,4 @@
-import withResponse from '@libs/server/withResponse';
+import { withResponse } from '@libs/server';
 
 interface IImageAPIResponse {
   id: string;

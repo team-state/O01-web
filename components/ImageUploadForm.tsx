@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import Image from 'next/image';
-import uploadImage from '@libs/client/uploadImage';
+import { uploadImage } from '@libs/client';
 
 const ImageUploadForm = () => {
   const [file, setFile] = useState<File | null>(null);
