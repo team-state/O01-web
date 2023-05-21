@@ -97,6 +97,23 @@ const updateCategory = async (request: Request) => {
   if (!response) throw Error(UNKNOWN_ERROR);
 };
 
+const deleteCategory = async (request: Request) => {
+  const userId = 'clhxc07sr0000lrtpf5pswy08';
+  const categoryId = getParamFromRequest(request, 'id');
+
+  if (!categoryId) throw Error(PARAMETER_ERROR);
+
+  await checkUserValidation(userId, categoryId);
+
+  const response = await prisma.category.delete({
+    where: {
+      id: +categoryId,
+    },
+  });
+
+  if (!response) throw Error(UNKNOWN_ERROR);
+};
+
 export const POST = async (request: Request) =>
   withResponse(withRequest(createCategory)(request));
 
@@ -105,3 +122,6 @@ export const GET = async (request: Request) =>
 
 export const PATCH = async (request: Request) =>
   withResponse(withRequest(updateCategory)(request));
+
+export const DELETE = async (request: Request) =>
+  withResponse(withRequest(deleteCategory)(request));
