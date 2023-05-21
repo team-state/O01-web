@@ -1,7 +1,11 @@
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
-import { prisma, withRequest, withResponse } from '@libs/server';
-import getParamFromRequest from 'libs/server/getParamFromRequest';
-import getUserIdFromSession from 'libs/server/getUserIdFromSession';
+import {
+  prisma,
+  withRequest,
+  withResponse,
+  getParamFromRequest,
+  getUserIdFromSession,
+} from '@libs/server';
 
 interface IPostDetailAPIResponseType {
   tag: {
