@@ -1,17 +1,24 @@
-import { PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
+import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import { prisma, withRequest, withResponse } from '@libs/server';
+import getParamFromRequest from 'libs/server/getParamFromRequest';
 import getUserId from 'libs/server/getUserId';
 
-const deleteTagFormPost = async (postId: number) => {
+const checkUserValidation = async (userId: string, postId: string) => {
+  const post = await prisma.post.findUnique({ where: { id: +postId } });
+
+  if (!post) throw Error(PARAMETER_ERROR);
+
+  if (post.userId !== userId) throw Error(INVALID_USER);
+};
+
+const deleteTagFromPost = async (postId: number) => {
   const response = await prisma.post_Tag.deleteMany({
     where: {
       postId,
     },
   });
 
-  if (!response) {
-    throw Error(UNKNOWN_ERROR);
-  }
+  if (!response) throw Error(UNKNOWN_ERROR);
 };
 
 const createPost = async (request: Request) => {
@@ -38,9 +45,8 @@ const createPost = async (request: Request) => {
       content &&
       String(isPrivate)
     )
-  ) {
+  )
     throw Error(PARAMETER_ERROR);
-  }
 
   const response = await prisma.post.create({
     data: {
@@ -80,9 +86,7 @@ const createPost = async (request: Request) => {
     },
   });
 
-  if (!response) {
-    throw Error(UNKNOWN_ERROR);
-  }
+  if (!response) throw Error(UNKNOWN_ERROR);
 };
 
 const updatePost = async (request: Request) => {
@@ -103,7 +107,7 @@ const updatePost = async (request: Request) => {
 
   if (!postId) throw Error(PARAMETER_ERROR);
 
-  if (tag || tag === null) await deleteTagFormPost(postId);
+  if (tag || tag === null) await deleteTagFromPost(postId);
 
   const response = await prisma.post.update({
     where: { id: postId },
@@ -144,15 +148,31 @@ const updatePost = async (request: Request) => {
     },
   });
 
-  if (!response) {
-    throw Error(UNKNOWN_ERROR);
-  }
+  if (!response) throw Error(UNKNOWN_ERROR);
 };
 
-export const POST = async (request: Request) => {
-  return withResponse(withRequest(createPost)(request));
+const deletePost = async (request: Request) => {
+  const userId = await getUserId();
+  const postId = getParamFromRequest(request, 'id');
+
+  if (!postId) throw Error(PARAMETER_ERROR);
+
+  await checkUserValidation(userId, postId);
+
+  const response = await prisma.post.delete({
+    where: {
+      id: +postId,
+    },
+  });
+
+  if (!response) throw Error(UNKNOWN_ERROR);
 };
 
-export const PUT = async (request: Request) => {
-  return withResponse(withRequest(updatePost)(request));
-};
+export const POST = async (request: Request) =>
+  withResponse(withRequest(createPost)(request));
+
+export const PUT = async (request: Request) =>
+  withResponse(withRequest(updatePost)(request));
+
+export const DELETE = async (request: Request) =>
+  withResponse(withRequest(deletePost)(request));
