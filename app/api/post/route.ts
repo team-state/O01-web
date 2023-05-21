@@ -3,6 +3,18 @@ import { prisma, withRequest, withResponse } from '@libs/server';
 import getParamFromRequest from 'libs/server/getParamFromRequest';
 import getUserId from 'libs/server/getUserId';
 
+interface IPostDetailAPIResponseType {
+  tag: {
+    tagName: string;
+  }[];
+  category: {
+    name: string;
+  } | null;
+  id: number;
+  title: string;
+  content: string;
+}
+
 const checkUserValidation = async (userId: string, postId: string) => {
   const post = await prisma.post.findUnique({ where: { id: +postId } });
 
@@ -89,6 +101,35 @@ const createPost = async (request: Request) => {
   if (!response) throw Error(UNKNOWN_ERROR);
 };
 
+const getPost = async (request: Request) => {
+  const postId = getParamFromRequest(request, 'id');
+
+  if (!postId) throw Error(PARAMETER_ERROR);
+
+  const response = await prisma.post.findUnique({
+    where: {
+      id: +postId,
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      tag: {
+        select: {
+          tagName: true,
+        },
+      },
+    },
+  });
+
+  return response;
+};
+
 const updatePost = async (request: Request) => {
   const userId = await getUserId();
   const body = await request.json();
@@ -170,6 +211,11 @@ const deletePost = async (request: Request) => {
 
 export const POST = async (request: Request) =>
   withResponse(withRequest(createPost)(request));
+
+export const GET = async (request: Request) =>
+  withResponse<IPostDetailAPIResponseType | null>(
+    withRequest(getPost)(request),
+  );
 
 export const PUT = async (request: Request) =>
   withResponse(withRequest(updatePost)(request));
