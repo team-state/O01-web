@@ -223,7 +223,7 @@ export const GET = async (request: Request) =>
     withRequest(getPost)(request),
   );
 
-export const PUT = async (request: Request) =>
+export const PATCH = async (request: Request) =>
   withResponse(withRequest(updatePost)(request));
 
 export const DELETE = async (request: Request) =>

@@ -104,7 +104,7 @@ model Category {
   id          Int      @id @unique @default(autoincrement())
   name        String   @unique
   thumbnailId String
-  url         String
+  url         String   @unique
   createdAt   DateTime @default(now())
   userId      String
 
