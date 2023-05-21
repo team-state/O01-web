@@ -1,9 +1,9 @@
 import { PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import { prisma, withRequest, withResponse } from '@libs/server';
-import getUserId from 'libs/server/getUserId';
+import getUserIdFromSession from 'libs/server/getUserIdFromSession';
 
 const createCategory = async (request: Request) => {
-  const userId = await getUserId();
+  const userId = await getUserIdFromSession();
   const body = await request.json();
 
   const { name, thumbnailId, url } = body;

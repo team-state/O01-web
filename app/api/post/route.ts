@@ -1,7 +1,7 @@
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import { prisma, withRequest, withResponse } from '@libs/server';
 import getParamFromRequest from 'libs/server/getParamFromRequest';
-import getUserId from 'libs/server/getUserId';
+import getUserIdFromSession from 'libs/server/getUserIdFromSession';
 
 interface IPostDetailAPIResponseType {
   tag: {
@@ -34,7 +34,7 @@ const deleteTagFromPost = async (postId: number) => {
 };
 
 const createPost = async (request: Request) => {
-  const userId = await getUserId();
+  const userId = await getUserIdFromSession();
   const body = await request.json();
 
   const {
@@ -131,7 +131,7 @@ const getPost = async (request: Request) => {
 };
 
 const updatePost = async (request: Request) => {
-  const userId = await getUserId();
+  const userId = await getUserIdFromSession();
   const body = await request.json();
 
   const {
@@ -193,7 +193,7 @@ const updatePost = async (request: Request) => {
 };
 
 const deletePost = async (request: Request) => {
-  const userId = await getUserId();
+  const userId = await getUserIdFromSession();
   const postId = getParamFromRequest(request, 'id');
 
   if (!postId) throw Error(PARAMETER_ERROR);

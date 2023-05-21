@@ -3,7 +3,7 @@ import { AUTH_ERROR_MESSAGE, INVALID_USER } from '@constants/error';
 import authOptions from './auth';
 import prisma from './prismaClient';
 
-const getUserId = async () => {
+const getUserIdFromSession = async () => {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
@@ -23,4 +23,4 @@ const getUserId = async () => {
   return id;
 };
 
-export default getUserId;
+export default getUserIdFromSession;
