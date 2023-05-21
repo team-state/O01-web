@@ -15,6 +15,16 @@ interface ICategoryListAPIResponse {
   thumbnailId: string;
 }
 
+const checkUserValidation = async (userId: string, categoryId: string) => {
+  const category = await prisma.category.findUnique({
+    where: { id: +categoryId },
+  });
+
+  if (!category) throw Error(PARAMETER_ERROR);
+
+  if (category.userId !== userId) throw Error(INVALID_USER);
+};
+
 const createCategory = async (request: Request) => {
   const userId = await getUserIdFromSession();
   const body = await request.json();
@@ -64,8 +74,34 @@ const getCategory = async (request: Request) => {
   return response;
 };
 
+const updateCategory = async (request: Request) => {
+  const userId = await getUserIdFromSession();
+  const body = await request.json();
+
+  const { categoryId, name, thumbnailId, url } = body;
+
+  if (!categoryId) throw Error(PARAMETER_ERROR);
+
+  await checkUserValidation(userId, categoryId);
+
+  const response = await prisma.category.update({
+    where: { id: categoryId },
+    data: {
+      ...(name && { name }),
+      ...(thumbnailId && { thumbnailId }),
+      ...(url && { url }),
+    },
+    select: { id: true },
+  });
+
+  if (!response) throw Error(UNKNOWN_ERROR);
+};
+
 export const POST = async (request: Request) =>
   withResponse(withRequest(createCategory)(request));
 
 export const GET = async (request: Request) =>
   withResponse<ICategoryListAPIResponse[]>(withRequest(getCategory)(request));
+
+export const PATCH = async (request: Request) =>
+  withResponse(withRequest(updateCategory)(request));
