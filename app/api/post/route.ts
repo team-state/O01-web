@@ -22,9 +22,9 @@ interface IPostDetailAPIResponseType {
 const checkUserValidation = async (userId: string, postId: string) => {
   const post = await prisma.post.findUnique({ where: { id: +postId } });
 
-  if (!post) throw Error(PARAMETER_ERROR);
+  if (!post) throw new Error(PARAMETER_ERROR);
 
-  if (post.userId !== userId) throw Error(INVALID_USER);
+  if (post.userId !== userId) throw new Error(INVALID_USER);
 };
 
 const deleteTagFromPost = async (postId: number) => {
@@ -34,7 +34,7 @@ const deleteTagFromPost = async (postId: number) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 const createPost = async (request: Request) => {
@@ -62,7 +62,7 @@ const createPost = async (request: Request) => {
       String(isPrivate)
     )
   )
-    throw Error(PARAMETER_ERROR);
+    throw new Error(PARAMETER_ERROR);
 
   const response = await prisma.post.create({
     data: {
@@ -102,13 +102,13 @@ const createPost = async (request: Request) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 const getPost = async (request: Request) => {
   const postId = getParamFromRequest(request, 'id');
 
-  if (!postId) throw Error(PARAMETER_ERROR);
+  if (!postId) throw new Error(PARAMETER_ERROR);
 
   const response = await prisma.post.findUnique({
     where: {
@@ -150,7 +150,7 @@ const updatePost = async (request: Request) => {
     tag,
   } = body;
 
-  if (!postId) throw Error(PARAMETER_ERROR);
+  if (!postId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, postId);
 
@@ -195,14 +195,14 @@ const updatePost = async (request: Request) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 const deletePost = async (request: Request) => {
   const userId = await getUserIdFromSession();
   const postId = getParamFromRequest(request, 'id');
 
-  if (!postId) throw Error(PARAMETER_ERROR);
+  if (!postId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, postId);
 
@@ -212,7 +212,7 @@ const deletePost = async (request: Request) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 export const POST = async (request: Request) =>

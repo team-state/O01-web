@@ -2,7 +2,7 @@ import { INVALID_USER, PARAMETER_ERROR } from '@constants/error';
 import prisma from './prismaClient';
 
 const getUserIdFromEmail = async (email: string) => {
-  if (!email) throw Error(PARAMETER_ERROR);
+  if (!email) throw new Error(PARAMETER_ERROR);
 
   const response = await prisma.user.findFirst({
     where: {
@@ -10,7 +10,7 @@ const getUserIdFromEmail = async (email: string) => {
     },
   });
 
-  if (!response) throw Error(INVALID_USER);
+  if (!response) throw new Error(INVALID_USER);
 
   return response.id;
 };

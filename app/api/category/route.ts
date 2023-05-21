@@ -20,9 +20,9 @@ const checkUserValidation = async (userId: string, categoryId: string) => {
     where: { id: +categoryId },
   });
 
-  if (!category) throw Error(PARAMETER_ERROR);
+  if (!category) throw new Error(PARAMETER_ERROR);
 
-  if (category.userId !== userId) throw Error(INVALID_USER);
+  if (category.userId !== userId) throw new Error(INVALID_USER);
 };
 
 const createCategory = async (request: Request) => {
@@ -31,7 +31,7 @@ const createCategory = async (request: Request) => {
 
   const { name, thumbnailId, url } = body;
 
-  if (!(name && thumbnailId && url)) throw Error(PARAMETER_ERROR);
+  if (!(name && thumbnailId && url)) throw new Error(PARAMETER_ERROR);
 
   const response = await prisma.category.create({
     data: {
@@ -49,13 +49,13 @@ const createCategory = async (request: Request) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 const getCategory = async (request: Request) => {
   const email = getParamFromRequest(request, 'email');
 
-  if (!email) throw Error(PARAMETER_ERROR);
+  if (!email) throw new Error(PARAMETER_ERROR);
 
   const userId = await getUserIdFromEmail(email);
 
@@ -80,7 +80,7 @@ const updateCategory = async (request: Request) => {
 
   const { categoryId, name, thumbnailId, url } = body;
 
-  if (!categoryId) throw Error(PARAMETER_ERROR);
+  if (!categoryId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, categoryId);
 
@@ -94,14 +94,14 @@ const updateCategory = async (request: Request) => {
     select: { id: true },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 const deleteCategory = async (request: Request) => {
-  const userId = 'clhxc07sr0000lrtpf5pswy08';
+  const userId = await getUserIdFromSession();
   const categoryId = getParamFromRequest(request, 'id');
 
-  if (!categoryId) throw Error(PARAMETER_ERROR);
+  if (!categoryId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, categoryId);
 
@@ -111,7 +111,7 @@ const deleteCategory = async (request: Request) => {
     },
   });
 
-  if (!response) throw Error(UNKNOWN_ERROR);
+  if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
 export const POST = async (request: Request) =>

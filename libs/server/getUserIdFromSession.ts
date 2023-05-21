@@ -7,7 +7,7 @@ const getUserIdFromSession = async () => {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
-    throw Error(AUTH_ERROR_MESSAGE);
+    throw new Error(AUTH_ERROR_MESSAGE);
   }
 
   const user = await prisma.user.findUnique({
@@ -16,7 +16,7 @@ const getUserIdFromSession = async () => {
     },
   });
 
-  if (!user) throw Error(INVALID_USER);
+  if (!user) throw new Error(INVALID_USER);
 
   const { id } = user;
 
