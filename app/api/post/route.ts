@@ -1,8 +1,4 @@
-import {
-  AUTH_ERROR_MESSAGE,
-  PARAMETER_ERROR,
-  UNKNOWN_ERROR,
-} from '@constants/error';
+import { PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import { prisma, withRequest, withResponse } from '@libs/server';
 import getUserId from 'libs/server/getUserId';
 
@@ -54,7 +50,7 @@ const createPost = async (request: Request) => {
           id: userId,
         },
       },
-      ...(tag && {
+      ...(tag?.length > 0 && {
         tag: {
           create: tag.map((tagName: string) => ({
             tag: {
