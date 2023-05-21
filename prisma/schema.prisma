@@ -108,7 +108,7 @@ model Category {
   createdAt   DateTime @default(now())
   userId      String
 
-  User User   @relation(fields: [userId], references: [id])
+  user User   @relation(fields: [userId], references: [id])
   post Post[]
 
   @@index([userId])
