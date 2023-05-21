@@ -20,8 +20,10 @@ const withResponse = async <T>(
         return createResponse(errorMessage, 401, true);
       case PARAMETER_ERROR:
         return createResponse(errorMessage, 400, true);
+      case UNKNOWN_ERROR:
+        return createResponse(errorMessage, 500, true);
       default:
-        return createResponse(UNKNOWN_ERROR, 500, true);
+        return createResponse(errorMessage, 500, true);
     }
   }
 };
