@@ -7,9 +7,8 @@ import { prisma, withRequest, withResponse } from '@libs/server';
 import getUserId from 'libs/server/getUserId';
 
 const createPost = async (request: Request) => {
-  const body = await request.json();
-
   const userId = await getUserId();
+  const body = await request.json();
 
   const {
     url,
@@ -21,10 +20,6 @@ const createPost = async (request: Request) => {
     categoryId,
     tags,
   } = body;
-
-  if (!userId) {
-    throw Error(AUTH_ERROR_MESSAGE);
-  }
 
   if (
     !(
