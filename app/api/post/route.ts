@@ -18,7 +18,7 @@ const createPost = async (request: Request) => {
     content,
     isPrivate,
     categoryId,
-    tags,
+    tag,
   } = body;
 
   if (
@@ -54,9 +54,9 @@ const createPost = async (request: Request) => {
           id: userId,
         },
       },
-      ...(tags && {
+      ...(tag && {
         tag: {
-          create: tags.map((tagName: string) => ({
+          create: tag.map((tagName: string) => ({
             tag: {
               connectOrCreate: {
                 where: { name: tagName },
@@ -67,11 +67,9 @@ const createPost = async (request: Request) => {
         },
       }),
     },
-    ...(tags && {
-      include: {
-        tag: true,
-      },
-    }),
+    select: {
+      id: true,
+    },
   });
 
   if (!response) {
@@ -79,6 +77,6 @@ const createPost = async (request: Request) => {
   }
 };
 
-export const POST = async (req: Request) => {
-  return withResponse(withRequest(createPost)(req));
+export const POST = async (request: Request) => {
+  return withResponse(withRequest(createPost)(request));
 };
