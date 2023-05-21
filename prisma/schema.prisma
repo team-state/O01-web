@@ -99,11 +99,11 @@ model Tag {
 }
 
 model Category {
-  id            Int      @id @unique @default(autoincrement())
-  name          String   @unique
-  thumbnailPath String?
-  url           String
-  createdAt     DateTime @default(now())
+  id          Int      @id @unique @default(autoincrement())
+  name        String   @unique
+  thumbnailId String
+  url         String
+  createdAt   DateTime @default(now())
 
   post Post[]
 }
