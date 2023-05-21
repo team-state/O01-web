@@ -148,6 +148,8 @@ const updatePost = async (request: Request) => {
 
   if (!postId) throw Error(PARAMETER_ERROR);
 
+  await checkUserValidation(userId, postId);
+
   if (tag || tag === null) await deleteTagFromPost(postId);
 
   const response = await prisma.post.update({
