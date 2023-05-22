@@ -1,3 +1,4 @@
+import type { IPostDetailAPIResponse } from 'apiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
@@ -6,18 +7,6 @@ import {
   getParamFromRequest,
   getUserIdFromSession,
 } from '@libs/server';
-
-interface IPostDetailAPIResponseType {
-  tag: {
-    tagName: string;
-  }[];
-  category: {
-    name: string;
-  } | null;
-  id: number;
-  title: string;
-  content: string;
-}
 
 const checkUserValidation = async (userId: string, postId: string) => {
   const post = await prisma.post.findUnique({ where: { id: +postId } });
@@ -219,9 +208,7 @@ export const POST = async (request: Request) =>
   withResponse(withRequest(createPost)(request));
 
 export const GET = async (request: Request) =>
-  withResponse<IPostDetailAPIResponseType | null>(
-    withRequest(getPost)(request),
-  );
+  withResponse<IPostDetailAPIResponse | null>(withRequest(getPost)(request));
 
 export const PATCH = async (request: Request) =>
   withResponse(withRequest(updatePost)(request));

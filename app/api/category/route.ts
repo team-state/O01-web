@@ -1,3 +1,4 @@
+import type { ICategoryListAPIResponse } from 'apiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
@@ -7,13 +8,6 @@ import {
   getUserIdFromSession,
   getUserIdFromEmail,
 } from '@libs/server';
-
-interface ICategoryListAPIResponse {
-  id: number;
-  name: string;
-  url: string;
-  thumbnailId: string;
-}
 
 const checkUserValidation = async (userId: string, categoryId: string) => {
   const category = await prisma.category.findUnique({
