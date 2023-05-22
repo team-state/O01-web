@@ -48,14 +48,19 @@ const createCategory = async (request: Request) => {
 
 const getCategory = async (request: Request) => {
   const email = getParamFromRequest(request, 'email');
+  const url = getParamFromRequest(request, 'url');
+  const name = getParamFromRequest(request, 'name');
 
   if (!email) throw new Error(PARAMETER_ERROR);
+  if (url && name) throw new Error(PARAMETER_ERROR);
 
   const userId = await getUserIdFromEmail(email);
 
   const response = await prisma.category.findMany({
     where: {
       userId,
+      ...(url && { url }),
+      ...(name && { name }),
     },
     select: {
       id: true,
