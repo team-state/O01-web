@@ -1,9 +1,16 @@
-import type { ICategoryListAPIResponse } from 'apiResponse';
+import type {
+  ICreateCategoryRequestParams,
+  IDeleteCategoryRequestType,
+  IGetCategoryRequestParams,
+  IUpdateCategoryRequestParams,
+} from 'ApiRequest';
+import type { ICategoryListAPIResponse } from 'ApiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
   withRequest,
   withResponse,
+  getBodyFromRequest,
   getParamFromRequest,
   getUserIdFromSession,
   getUserIdFromEmail,
@@ -21,9 +28,9 @@ const checkUserValidation = async (userId: string, categoryId: string) => {
 
 const createCategory = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const body = await request.json();
 
-  const { name, thumbnailId, url } = body;
+  const { name, thumbnailId, url } =
+    await getBodyFromRequest<ICreateCategoryRequestParams>(request);
 
   if (!(name && thumbnailId && url)) throw new Error(PARAMETER_ERROR);
 
@@ -47,9 +54,8 @@ const createCategory = async (request: Request) => {
 };
 
 const getCategory = async (request: Request) => {
-  const email = getParamFromRequest(request, 'email');
-  const url = getParamFromRequest(request, 'url');
-  const name = getParamFromRequest(request, 'name');
+  const { email, url, name } =
+    getParamFromRequest<IGetCategoryRequestParams>(request);
 
   if (!email) throw new Error(PARAMETER_ERROR);
   if (url && name) throw new Error(PARAMETER_ERROR);
@@ -75,16 +81,17 @@ const getCategory = async (request: Request) => {
 
 const updateCategory = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const body = await request.json();
 
-  const { categoryId, name, thumbnailId, url } = body;
+  const { categoryId, name, thumbnailId, url } = await getBodyFromRequest<
+    Partial<IUpdateCategoryRequestParams>
+  >(request);
 
   if (!categoryId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, categoryId);
 
   const response = await prisma.category.update({
-    where: { id: categoryId },
+    where: { id: +categoryId },
     data: {
       ...(name && { name }),
       ...(thumbnailId && { thumbnailId }),
@@ -98,7 +105,8 @@ const updateCategory = async (request: Request) => {
 
 const deleteCategory = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const categoryId = getParamFromRequest(request, 'id');
+  const { id: categoryId } =
+    getParamFromRequest<IDeleteCategoryRequestType>(request);
 
   if (!categoryId) throw new Error(PARAMETER_ERROR);
 

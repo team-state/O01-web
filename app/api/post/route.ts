@@ -1,9 +1,16 @@
-import type { IPostDetailAPIResponse } from 'apiResponse';
+import type {
+  ICreatePostRequestParams,
+  IDeletePostRequestParams,
+  IGetPostRequestParams,
+  IUpdatePostRequestParams,
+} from 'ApiRequest';
+import type { IPostDetailAPIResponse } from 'ApiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
   withRequest,
   withResponse,
+  getBodyFromRequest,
   getParamFromRequest,
   getUserIdFromSession,
 } from '@libs/server';
@@ -28,8 +35,6 @@ const deleteTagFromPost = async (postId: number) => {
 
 const createPost = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const body = await request.json();
-
   const {
     url,
     title,
@@ -39,7 +44,7 @@ const createPost = async (request: Request) => {
     isPrivate,
     categoryId,
     tag,
-  } = body;
+  } = await getBodyFromRequest<ICreatePostRequestParams>(request);
 
   if (
     !(
@@ -64,7 +69,7 @@ const createPost = async (request: Request) => {
       ...(categoryId && {
         category: {
           connect: {
-            id: categoryId,
+            id: +categoryId,
           },
         },
       }),
@@ -73,18 +78,19 @@ const createPost = async (request: Request) => {
           id: userId,
         },
       },
-      ...(tag?.length > 0 && {
-        tag: {
-          create: tag.map((tagName: string) => ({
-            tag: {
-              connectOrCreate: {
-                where: { name: tagName },
-                create: { name: tagName, userId },
+      ...(tag &&
+        tag?.length > 0 && {
+          tag: {
+            create: tag.map((tagName: string) => ({
+              tag: {
+                connectOrCreate: {
+                  where: { name: tagName },
+                  create: { name: tagName, userId },
+                },
               },
-            },
-          })),
-        },
-      }),
+            })),
+          },
+        }),
     },
     select: {
       id: true,
@@ -95,7 +101,7 @@ const createPost = async (request: Request) => {
 };
 
 const getPost = async (request: Request) => {
-  const postId = getParamFromRequest(request, 'id');
+  const { id: postId } = getParamFromRequest<IGetPostRequestParams>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
 
@@ -125,7 +131,6 @@ const getPost = async (request: Request) => {
 
 const updatePost = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const body = await request.json();
 
   const {
     postId,
@@ -137,16 +142,16 @@ const updatePost = async (request: Request) => {
     isPrivate,
     categoryId,
     tag,
-  } = body;
+  } = await getBodyFromRequest<Partial<IUpdatePostRequestParams>>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
 
   await checkUserValidation(userId, postId);
 
-  if (tag || tag === null) await deleteTagFromPost(postId);
+  if (tag || tag === null) await deleteTagFromPost(+postId);
 
   const response = await prisma.post.update({
-    where: { id: postId },
+    where: { id: +postId },
     data: {
       ...(url && { url }),
       ...(title && { title }),
@@ -162,22 +167,23 @@ const updatePost = async (request: Request) => {
       ...(categoryId && {
         category: {
           connect: {
-            id: categoryId,
+            id: +categoryId,
           },
         },
       }),
-      ...(tag?.length > 0 && {
-        tag: {
-          create: tag.map((tagName: string) => ({
-            tag: {
-              connectOrCreate: {
-                where: { name: tagName },
-                create: { name: tagName, userId },
+      ...(tag &&
+        tag?.length > 0 && {
+          tag: {
+            create: tag.map((tagName: string) => ({
+              tag: {
+                connectOrCreate: {
+                  where: { name: tagName },
+                  create: { name: tagName, userId },
+                },
               },
-            },
-          })),
-        },
-      }),
+            })),
+          },
+        }),
     },
     select: {
       id: true,
@@ -189,7 +195,7 @@ const updatePost = async (request: Request) => {
 
 const deletePost = async (request: Request) => {
   const userId = await getUserIdFromSession();
-  const postId = getParamFromRequest(request, 'id');
+  const { id: postId } = getParamFromRequest<IDeletePostRequestParams>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
 

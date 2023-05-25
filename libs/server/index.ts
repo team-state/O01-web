@@ -1,4 +1,5 @@
 import authOptions from './auth';
+import getBodyFromRequest from './getBodyFromRequest';
 import getParamFromRequest from './getParamFromRequest';
 import getUserIdFromEmail from './getUserIdFromEmail';
 import getUserIdFromSession from './getUserIdFromSession';
@@ -14,4 +15,5 @@ export {
   getUserIdFromEmail,
   getUserIdFromSession,
   getParamFromRequest,
+  getBodyFromRequest,
 };

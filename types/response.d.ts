@@ -1,4 +1,4 @@
-declare module 'apiResponse' {
+declare module 'ApiResponse' {
   interface ICategoryListAPIResponse {
     id: number;
     name: string;
