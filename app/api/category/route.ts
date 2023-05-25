@@ -1,6 +1,6 @@
 import type {
   ICreateCategoryRequestParams,
-  IDeleteCategoryRequestType,
+  IDeleteCategoryRequestParams,
   IGetCategoryRequestParams,
   IUpdateCategoryRequestParams,
 } from 'ApiRequest';
@@ -106,7 +106,7 @@ const updateCategory = async (request: Request) => {
 const deleteCategory = async (request: Request) => {
   const userId = await getUserIdFromSession();
   const { id: categoryId } =
-    getParamFromRequest<IDeleteCategoryRequestType>(request);
+    getParamFromRequest<IDeleteCategoryRequestParams>(request);
 
   if (!categoryId) throw new Error(PARAMETER_ERROR);
 

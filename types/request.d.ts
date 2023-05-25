@@ -36,5 +36,5 @@ declare module 'ApiRequest' {
     categoryId: string;
   }
 
-  interface IDeleteCategoryRequestType extends IDeletePostRequestParams {}
+  interface IDeleteCategoryRequestParams extends IDeletePostRequestParams {}
 }
