@@ -1,9 +1,9 @@
-import { PARAMETER_ERROR } from '@constants/error';
+import { URL_PARSING_ERROR } from '@constants/error';
 
 const getParamFromRequest = <T>(request: Request): T => {
   const { searchParams } = new URL(request.url);
 
-  if (!searchParams) throw new Error(PARAMETER_ERROR);
+  if (!searchParams) throw new Error(URL_PARSING_ERROR);
 
   const params: Record<string, string> = {};
 
