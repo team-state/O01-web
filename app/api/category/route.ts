@@ -19,6 +19,7 @@ import {
 const checkUserValidation = async (userId: string, categoryId: string) => {
   const category = await prisma.category.findUnique({
     where: { id: +categoryId },
+    select: { userId: true },
   });
 
   if (!category) throw new Error(PARAMETER_ERROR);

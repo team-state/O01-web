@@ -16,7 +16,10 @@ import {
 } from '@libs/server';
 
 const checkUserValidation = async (userId: string, postId: string) => {
-  const post = await prisma.post.findUnique({ where: { id: +postId } });
+  const post = await prisma.post.findUnique({
+    where: { id: +postId },
+    select: { userId: true },
+  });
 
   if (!post) throw new Error(PARAMETER_ERROR);
 
