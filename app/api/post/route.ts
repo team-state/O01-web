@@ -121,19 +121,19 @@ const getPost = async (request: Request) => {
           name: true,
         },
       },
-      userId: true,
       isPrivate: true,
       tag: {
         select: {
           tagName: true,
         },
       },
+      user: { select: { id: true, name: true, image: true } },
     },
   });
 
   if (response && response.isPrivate) {
     const userIdFromSession = await getUserIdFromSession();
-    if (response.userId !== userIdFromSession) throw new Error(INVALID_USER);
+    if (response.user.id !== userIdFromSession) throw new Error(INVALID_USER);
   }
 
   return response;
