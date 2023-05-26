@@ -121,6 +121,8 @@ const getPost = async (request: Request) => {
           name: true,
         },
       },
+      userId: true,
+      isPrivate: true,
       tag: {
         select: {
           tagName: true,
@@ -128,6 +130,11 @@ const getPost = async (request: Request) => {
       },
     },
   });
+
+  if (response && response.isPrivate) {
+    const userIdFromSession = await getUserIdFromSession();
+    if (response.userId !== userIdFromSession) throw new Error(INVALID_USER);
+  }
 
   return response;
 };
