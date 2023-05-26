@@ -28,7 +28,7 @@ const checkUserValidation = async (userId: string, categoryId: string) => {
 };
 
 const createCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const { name, thumbnailId, url } =
     await getBodyFromRequest<ICreateCategoryRequestParams>(request);
@@ -81,7 +81,7 @@ const getCategory = async (request: Request) => {
 };
 
 const updateCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const { categoryId, name, thumbnailId, url } = await getBodyFromRequest<
     Partial<IUpdateCategoryRequestParams>
@@ -105,7 +105,7 @@ const updateCategory = async (request: Request) => {
 };
 
 const deleteCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const { id: categoryId } =
     getParamFromRequest<IDeleteCategoryRequestParams>(request);
 

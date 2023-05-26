@@ -37,7 +37,7 @@ const deleteTagFromPost = async (postId: number) => {
 };
 
 const createPost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const {
     url,
     title,
@@ -132,7 +132,7 @@ const getPost = async (request: Request) => {
   });
 
   if (response && response.isPrivate) {
-    const userIdFromSession = await getUserIdFromSession();
+    const userIdFromSession = await getUserIdFromSession(true);
     if (response.user.id !== userIdFromSession) throw new Error(INVALID_USER);
   }
 
@@ -140,7 +140,7 @@ const getPost = async (request: Request) => {
 };
 
 const updatePost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const {
     postId,
@@ -204,7 +204,7 @@ const updatePost = async (request: Request) => {
 };
 
 const deletePost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const { id: postId } = getParamFromRequest<IDeletePostRequestParams>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
