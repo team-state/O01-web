@@ -45,4 +45,8 @@ declare module 'ApiRequest' {
   }
 
   interface IDeleteCategoryRequestParams extends IDeletePostRequestParams {}
+
+  interface IGetTagListRequestParams {
+    nickName: string;
+  }
 }

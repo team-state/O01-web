@@ -34,4 +34,8 @@ declare module 'ApiResponse' {
     title: string;
     content: string;
   }
+
+  interface ITagListAPIResponse {
+    name: Tag;
+  }
 }
