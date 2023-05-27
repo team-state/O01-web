@@ -1,7 +1,7 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import type { NextAuthOptions } from 'next-auth';
+import Github from 'next-auth/providers/github';
 import { ENV_ERROR_MESSAGE } from '@constants/error';
-import GithubProvider from './githubProviderWithScope';
 import prisma from './prismaClient';
 
 const secret = process.env.NEXT_AUTH_SECRET;
@@ -16,10 +16,13 @@ const authOptions: NextAuthOptions = {
   secret,
   adapter: PrismaAdapter(prisma),
   providers: [
-    GithubProvider({
+    Github({
       clientId,
       clientSecret,
-      scope: ['repo'],
+      authorization: {
+        url: 'https://github.com/login/oauth/authorize',
+        params: { scope: 'read:user user:email repo' },
+      },
     }),
   ],
   session: {
