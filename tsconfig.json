@@ -21,6 +21,7 @@
     "noFallthroughCasesInSwitch": true, //switch문 이상하면 에러내기
     "removeComments": true, //컴파일시 주석제거
     "strictFunctionTypes": true, //함수파라미터 타입체크 강하게
+    "typeRoots": ["node_modules/@types", "@types"],
     "baseUrl": ".",
     "paths": {
       "@libs/server": ["libs/server"],

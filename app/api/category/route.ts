@@ -1,10 +1,3 @@
-import type {
-  ICreateCategoryRequestParams,
-  IDeleteCategoryRequestParams,
-  IGetCategoryRequestParams,
-  IUpdateCategoryRequestParams,
-} from 'ApiRequest';
-import type { ICategoryListAPIResponse } from 'ApiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
@@ -13,8 +6,15 @@ import {
   getBodyFromRequest,
   getParamFromRequest,
   getUserIdFromSession,
-  getUserIdFromEmail,
+  getUserIdFromNickname,
 } from '@libs/server';
+import type {
+  ICreateCategoryRequestParams,
+  IDeleteCategoryRequestParams,
+  IGetCategoryRequestParams,
+  IUpdateCategoryRequestParams,
+  ICategoryListAPIResponse,
+} from '@types';
 
 const checkUserValidation = async (userId: string, categoryId: string) => {
   const category = await prisma.category.findUnique({

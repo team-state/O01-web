@@ -1,10 +1,3 @@
-import type {
-  ICreatePostRequestParams,
-  IDeletePostRequestParams,
-  IGetPostRequestParams,
-  IUpdatePostRequestParams,
-} from 'ApiRequest';
-import type { IPostDetailAPIResponse } from 'ApiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
@@ -14,6 +7,13 @@ import {
   getParamFromRequest,
   getUserIdFromSession,
 } from '@libs/server';
+import type {
+  ICreatePostRequestParams,
+  IDeletePostRequestParams,
+  IGetPostRequestParams,
+  IUpdatePostRequestParams,
+  IPostDetailAPIResponse,
+} from '@types';
 
 const checkUserValidation = async (userId: string, postId: string) => {
   const post = await prisma.post.findUnique({

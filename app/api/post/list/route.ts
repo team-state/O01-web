@@ -1,14 +1,13 @@
-import type { IGetPostListRequestParams } from 'ApiRequest';
-import type { IPostListAPIResponse } from 'ApiResponse';
 import { PARAMETER_ERROR } from '@constants/error';
 import {
   getParamFromRequest,
   withRequest,
   withResponse,
   prisma,
-  getUserIdFromEmail,
+  getUserIdFromNickname,
   getUserIdFromSession,
 } from '@libs/server';
+import type { IGetPostListRequestParams, IPostListAPIResponse } from '@types';
 
 export const dynamic = 'force-dynamic';
 

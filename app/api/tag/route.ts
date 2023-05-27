@@ -1,5 +1,3 @@
-import type { IGetTagListRequestParams } from 'ApiRequest';
-import type { ITagListAPIResponse } from 'ApiResponse';
 import { PARAMETER_ERROR } from '@constants/error';
 import {
   getParamFromRequest,
@@ -7,6 +5,7 @@ import {
   withResponse,
   prisma,
 } from '@libs/server';
+import type { IGetTagListRequestParams, ITagListAPIResponse } from '@types';
 
 export const dynamic = 'force-dynamic';
 
