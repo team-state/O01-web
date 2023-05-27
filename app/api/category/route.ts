@@ -55,13 +55,13 @@ const createCategory = async (request: Request) => {
 };
 
 const getCategoryList = async (request: Request) => {
-  const { email, url, name } =
+  const { nickname, url, name } =
     getParamFromRequest<IGetCategoryRequestParams>(request);
 
-  if (!email) throw new Error(PARAMETER_ERROR);
+  if (!nickname) throw new Error(PARAMETER_ERROR);
   if (url && name) throw new Error(PARAMETER_ERROR);
 
-  const userId = await getUserIdFromEmail(email);
+  const userId = await getUserIdFromNickname(nickname);
 
   const response = await prisma.category.findMany({
     where: {

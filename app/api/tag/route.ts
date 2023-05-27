@@ -10,14 +10,14 @@ import type { IGetTagListRequestParams, ITagListAPIResponse } from '@types';
 export const dynamic = 'force-dynamic';
 
 const getTagList = async (request: Request) => {
-  const { nickName } = getParamFromRequest<IGetTagListRequestParams>(request);
+  const { nickname } = getParamFromRequest<IGetTagListRequestParams>(request);
 
-  if (!nickName) throw Error(PARAMETER_ERROR);
+  if (!nickname) throw Error(PARAMETER_ERROR);
 
   const response = await prisma.tag.findMany({
     where: {
       user: {
-        nickName,
+        nickname,
       },
     },
     select: {

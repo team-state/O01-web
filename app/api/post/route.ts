@@ -224,7 +224,7 @@ export const POST = async (request: Request) =>
   withResponse(withRequest(createPost)(request));
 
 export const GET = async (request: Request) =>
-  withResponse<IPostDetailAPIResponse | null>(withRequest(getPost)(request));
+  withResponse<IPostDetailAPIResponse>(withRequest(getPost)(request));
 
 export const PATCH = async (request: Request) =>
   withResponse(withRequest(updatePost)(request));

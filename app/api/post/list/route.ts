@@ -15,32 +15,33 @@ const paramValidation = ({
   categoryId,
   tagName,
   title,
-  email,
+  nickname,
   date,
 }: IGetPostListRequestParams) => {
   const paramCount = [categoryId, tagName, title].filter(
     param => param !== undefined,
   ).length;
 
-  if (paramCount >= 2 || (email && date) || (!email && !date))
+  if (paramCount >= 2 || (nickname && date) || (!nickname && !date))
     throw new Error(PARAMETER_ERROR);
 };
 
 const getPostList = async (request: Request) => {
-  const { email, date, title, tagName, categoryId } =
+  const { nickname, date, title, tagName, categoryId } =
     getParamFromRequest<IGetPostListRequestParams>(request);
 
-  paramValidation({ categoryId, tagName, title, email, date });
+  paramValidation({ categoryId, tagName, title, nickname, date });
 
   const userIdFromSession = await getUserIdFromSession(false);
-  const userIdFromEmail = email && (await getUserIdFromEmail(email));
+  const userIdFromNickname =
+    nickname && (await getUserIdFromNickname(nickname));
 
   const response = await prisma.post.findMany({
     where: {
-      ...(!(userIdFromSession && userIdFromEmail === userIdFromSession) && {
+      ...(!(userIdFromSession && userIdFromNickname === userIdFromSession) && {
         isPrivate: false,
       }),
-      ...(userIdFromEmail && { user: { id: userIdFromEmail } }),
+      ...(userIdFromNickname && { user: { nickname: userIdFromNickname } }),
       ...(date && { createdAt: date }),
       ...(title && {
         title: {
