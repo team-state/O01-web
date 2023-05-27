@@ -1,10 +1,3 @@
-import type {
-  ICreateCategoryRequestParams,
-  IDeleteCategoryRequestParams,
-  IGetCategoryRequestParams,
-  IUpdateCategoryRequestParams,
-} from 'ApiRequest';
-import type { ICategoryListAPIResponse } from 'ApiResponse';
 import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
 import {
   prisma,
@@ -13,12 +6,19 @@ import {
   getBodyFromRequest,
   getParamFromRequest,
   getUserIdFromSession,
-  getUserIdFromEmail,
+  getUserIdFromNickname,
 } from '@libs/server';
+import type {
+  ICreateCategoryRequestParams,
+  IDeleteCategoryRequestParams,
+  IGetCategoryRequestParams,
+  IUpdateCategoryRequestParams,
+  ICategoryListAPIResponse,
+} from '@types';
 
-const checkUserValidation = async (userId: string, categoryId: string) => {
+const checkUserValidation = async (userId: string, categoryId: number) => {
   const category = await prisma.category.findUnique({
-    where: { id: +categoryId },
+    where: { id: categoryId },
     select: { userId: true },
   });
 
@@ -55,13 +55,13 @@ const createCategory = async (request: Request) => {
 };
 
 const getCategoryList = async (request: Request) => {
-  const { email, url, name } =
+  const { nickname, url, name } =
     getParamFromRequest<IGetCategoryRequestParams>(request);
 
-  if (!email) throw new Error(PARAMETER_ERROR);
+  if (!nickname) throw new Error(PARAMETER_ERROR);
   if (url && name) throw new Error(PARAMETER_ERROR);
 
-  const userId = await getUserIdFromEmail(email);
+  const userId = await getUserIdFromNickname(nickname);
 
   const response = await prisma.category.findMany({
     where: {
@@ -92,7 +92,7 @@ const updateCategory = async (request: Request) => {
   await checkUserValidation(userId, categoryId);
 
   const response = await prisma.category.update({
-    where: { id: +categoryId },
+    where: { id: categoryId },
     data: {
       ...(name && { name }),
       ...(thumbnailId && { thumbnailId }),
@@ -111,11 +111,11 @@ const deleteCategory = async (request: Request) => {
 
   if (!categoryId) throw new Error(PARAMETER_ERROR);
 
-  await checkUserValidation(userId, categoryId);
+  await checkUserValidation(userId, Number(categoryId));
 
   const response = await prisma.category.delete({
     where: {
-      id: +categoryId,
+      id: Number(categoryId),
     },
   });
 

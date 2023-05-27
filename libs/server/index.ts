@@ -1,7 +1,7 @@
 import authOptions from './auth';
 import getBodyFromRequest from './getBodyFromRequest';
 import getParamFromRequest from './getParamFromRequest';
-import getUserIdFromEmail from './getUserIdFromEmail';
+import getUserIdFromNickname from './getUserIdFromNickname';
 import getUserIdFromSession from './getUserIdFromSession';
 import prisma from './prismaClient';
 import withRequest from './withRequest';
@@ -12,7 +12,7 @@ export {
   prisma,
   withRequest,
   withResponse,
-  getUserIdFromEmail,
+  getUserIdFromNickname,
   getUserIdFromSession,
   getParamFromRequest,
   getBodyFromRequest,
