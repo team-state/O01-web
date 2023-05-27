@@ -44,13 +44,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  name             String?
+  nickName         String    @unique @default(cuid())
+  email            String?   @unique
+  emailVerified    DateTime?
+  image            String?
+  nickNameVerified Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
@@ -94,7 +96,7 @@ model Tag {
   name   String @id @unique
   userId String
 
-  User User       @relation(fields: [userId], references: [id])
+  user User       @relation(fields: [userId], references: [id])
   post Post_Tag[]
 
   @@index([userId])
