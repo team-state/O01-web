@@ -19,6 +19,7 @@ import {
 const checkUserValidation = async (userId: string, categoryId: string) => {
   const category = await prisma.category.findUnique({
     where: { id: +categoryId },
+    select: { userId: true },
   });
 
   if (!category) throw new Error(PARAMETER_ERROR);
@@ -27,7 +28,7 @@ const checkUserValidation = async (userId: string, categoryId: string) => {
 };
 
 const createCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const { name, thumbnailId, url } =
     await getBodyFromRequest<ICreateCategoryRequestParams>(request);
@@ -53,7 +54,7 @@ const createCategory = async (request: Request) => {
   if (!response) throw new Error(UNKNOWN_ERROR);
 };
 
-const getCategory = async (request: Request) => {
+const getCategoryList = async (request: Request) => {
   const { email, url, name } =
     getParamFromRequest<IGetCategoryRequestParams>(request);
 
@@ -80,7 +81,7 @@ const getCategory = async (request: Request) => {
 };
 
 const updateCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const { categoryId, name, thumbnailId, url } = await getBodyFromRequest<
     Partial<IUpdateCategoryRequestParams>
@@ -104,7 +105,7 @@ const updateCategory = async (request: Request) => {
 };
 
 const deleteCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const { id: categoryId } =
     getParamFromRequest<IDeleteCategoryRequestParams>(request);
 
@@ -125,7 +126,9 @@ export const POST = async (request: Request) =>
   withResponse(withRequest(createCategory)(request));
 
 export const GET = async (request: Request) =>
-  withResponse<ICategoryListAPIResponse[]>(withRequest(getCategory)(request));
+  withResponse<ICategoryListAPIResponse[]>(
+    withRequest(getCategoryList)(request),
+  );
 
 export const PATCH = async (request: Request) =>
   withResponse(withRequest(updateCategory)(request));

@@ -14,6 +14,14 @@ declare module 'ApiRequest' {
     id: string;
   }
 
+  interface IGetPostListRequestParams {
+    email?: string;
+    date?: string;
+    title?: string;
+    tagName?: string;
+    categoryId?: string;
+  }
+
   interface IUpdatePostRequestParams extends ICreatePostRequestParams {
     postId: string;
   }
@@ -37,4 +45,8 @@ declare module 'ApiRequest' {
   }
 
   interface IDeleteCategoryRequestParams extends IDeletePostRequestParams {}
+
+  interface IGetTagListRequestParams {
+    nickName: string;
+  }
 }

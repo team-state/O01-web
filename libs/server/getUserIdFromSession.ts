@@ -3,11 +3,18 @@ import { AUTH_ERROR_MESSAGE, INVALID_USER } from '@constants/error';
 import authOptions from './auth';
 import prisma from './prismaClient';
 
-const getUserIdFromSession = async () => {
+type GetUserIdFromSessionReturnType<T extends boolean> = T extends true
+  ? string
+  : string | undefined;
+
+const getUserIdFromSession = async <T extends boolean>(
+  strict: T,
+): Promise<GetUserIdFromSessionReturnType<T>> => {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
-    throw new Error(AUTH_ERROR_MESSAGE);
+    if (strict) throw new Error(AUTH_ERROR_MESSAGE);
+    return undefined as GetUserIdFromSessionReturnType<T>;
   }
 
   const user = await prisma.user.findUnique({
@@ -16,11 +23,9 @@ const getUserIdFromSession = async () => {
     },
   });
 
-  if (!user) throw new Error(INVALID_USER);
+  if (strict && !user) throw new Error(INVALID_USER);
 
-  const { id } = user;
-
-  return id;
+  return user?.id as GetUserIdFromSessionReturnType<T>;
 };
 
 export default getUserIdFromSession;

@@ -1,5 +1,6 @@
 import {
   AUTH_ERROR_MESSAGE,
+  INVALID_USER,
   PARAMETER_ERROR,
   UNKNOWN_ERROR,
 } from '@constants/error';
@@ -17,6 +18,7 @@ const withResponse = async <T>(
 
     switch (errorMessage) {
       case AUTH_ERROR_MESSAGE:
+      case INVALID_USER:
         return createResponse(errorMessage, 401, true);
       case PARAMETER_ERROR:
         return createResponse(errorMessage, 400, true);

@@ -16,7 +16,10 @@ import {
 } from '@libs/server';
 
 const checkUserValidation = async (userId: string, postId: string) => {
-  const post = await prisma.post.findUnique({ where: { id: +postId } });
+  const post = await prisma.post.findUnique({
+    where: { id: +postId },
+    select: { userId: true },
+  });
 
   if (!post) throw new Error(PARAMETER_ERROR);
 
@@ -34,7 +37,7 @@ const deleteTagFromPost = async (postId: number) => {
 };
 
 const createPost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const {
     url,
     title,
@@ -118,19 +121,26 @@ const getPost = async (request: Request) => {
           name: true,
         },
       },
+      isPrivate: true,
       tag: {
         select: {
           tagName: true,
         },
       },
+      user: { select: { id: true, name: true, image: true } },
     },
   });
+
+  if (response && response.isPrivate) {
+    const userIdFromSession = await getUserIdFromSession(true);
+    if (response.user.id !== userIdFromSession) throw new Error(INVALID_USER);
+  }
 
   return response;
 };
 
 const updatePost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
 
   const {
     postId,
@@ -194,7 +204,7 @@ const updatePost = async (request: Request) => {
 };
 
 const deletePost = async (request: Request) => {
-  const userId = await getUserIdFromSession();
+  const userId = await getUserIdFromSession(true);
   const { id: postId } = getParamFromRequest<IDeletePostRequestParams>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
