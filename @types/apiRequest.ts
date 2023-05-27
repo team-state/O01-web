@@ -1,52 +1,34 @@
-export interface ICreatePostRequestParams {
-  url: string;
-  title: string;
-  description: string;
-  thumbnailId: string;
-  content: string;
-  isPrivate: boolean;
-  categoryId?: string;
+import { Category, Post, User } from '@prisma/client';
+
+export type ICreatePostRequestParams = Omit<Post, 'createdAt' | 'updatedAt'> & {
   tag?: string[];
-}
+};
 
-export interface IGetPostRequestParams {
-  id: string;
-}
+export type IGetPostRequestParams = Pick<Post, 'id'>;
 
-export interface IGetPostListRequestParams {
-  nickname?: string;
-  date?: string;
-  title?: string;
-  tagName?: string;
-  categoryId?: string;
-}
+export type IGetPostListRequestParams = Partial<
+  Pick<User, 'nickname'> &
+    Pick<Post, 'title' | 'categoryId'> & { date?: string; tagName: string }
+>;
 
-export interface IUpdatePostRequestParams extends ICreatePostRequestParams {
-  postId: string;
-}
+export type IUpdatePostRequestParams = ICreatePostRequestParams & {
+  postId: number;
+};
 
-export interface IDeletePostRequestParams extends IGetPostRequestParams {}
+export type IDeletePostRequestParams = IGetPostRequestParams;
 
-export interface ICreateCategoryRequestParams {
-  name: string;
-  thumbnailId: string;
-  url: string;
-}
+export type ICreateCategoryRequestParams = Pick<
+  Category,
+  'name' | 'thumbnailId' | 'url'
+>;
 
-export interface IGetCategoryRequestParams {
-  nickname: string;
-  url?: string;
-  name?: string;
-}
+export type IGetCategoryRequestParams = Pick<User, 'nickname'> &
+  Partial<Pick<Category, 'url' | 'name'>>;
 
-export interface IUpdateCategoryRequestParams
-  extends ICreateCategoryRequestParams {
-  categoryId: string;
-}
+export type IUpdateCategoryRequestParams = ICreateCategoryRequestParams & {
+  categoryId: number;
+};
 
-export interface IDeleteCategoryRequestParams
-  extends IDeletePostRequestParams {}
+export type IDeleteCategoryRequestParams = IDeletePostRequestParams;
 
-export interface IGetTagListRequestParams {
-  nickname: string;
-}
+export type IGetTagListRequestParams = Pick<User, 'nickname'>;

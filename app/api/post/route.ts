@@ -15,9 +15,9 @@ import type {
   IPostDetailAPIResponse,
 } from '@types';
 
-const checkUserValidation = async (userId: string, postId: string) => {
+const checkUserValidation = async (userId: string, postId: number) => {
   const post = await prisma.post.findUnique({
-    where: { id: +postId },
+    where: { id: postId },
     select: { userId: true },
   });
 
@@ -72,7 +72,7 @@ const createPost = async (request: Request) => {
       ...(categoryId && {
         category: {
           connect: {
-            id: +categoryId,
+            id: categoryId,
           },
         },
       }),
@@ -110,7 +110,7 @@ const getPost = async (request: Request) => {
 
   const response = await prisma.post.findUnique({
     where: {
-      id: +postId,
+      id: Number(postId),
     },
     select: {
       id: true,
@@ -161,7 +161,7 @@ const updatePost = async (request: Request) => {
   if (tag || tag === null) await deleteTagFromPost(+postId);
 
   const response = await prisma.post.update({
-    where: { id: +postId },
+    where: { id: postId },
     data: {
       ...(url && { url }),
       ...(title && { title }),
@@ -177,7 +177,7 @@ const updatePost = async (request: Request) => {
       ...(categoryId && {
         category: {
           connect: {
-            id: +categoryId,
+            id: categoryId,
           },
         },
       }),
@@ -209,11 +209,11 @@ const deletePost = async (request: Request) => {
 
   if (!postId) throw new Error(PARAMETER_ERROR);
 
-  await checkUserValidation(userId, postId);
+  await checkUserValidation(userId, Number(postId));
 
   const response = await prisma.post.delete({
     where: {
-      id: +postId,
+      id: Number(postId),
     },
   });
 

@@ -48,7 +48,7 @@ const getPostList = async (request: Request) => {
           contains: title,
         },
       }),
-      ...(categoryId && { category: { id: +categoryId } }),
+      ...(categoryId && { category: { id: Number(categoryId) } }),
       ...(tagName && {
         tag: {
           some: {

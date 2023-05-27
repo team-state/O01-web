@@ -16,9 +16,9 @@ import type {
   ICategoryListAPIResponse,
 } from '@types';
 
-const checkUserValidation = async (userId: string, categoryId: string) => {
+const checkUserValidation = async (userId: string, categoryId: number) => {
   const category = await prisma.category.findUnique({
-    where: { id: +categoryId },
+    where: { id: categoryId },
     select: { userId: true },
   });
 
@@ -92,7 +92,7 @@ const updateCategory = async (request: Request) => {
   await checkUserValidation(userId, categoryId);
 
   const response = await prisma.category.update({
-    where: { id: +categoryId },
+    where: { id: categoryId },
     data: {
       ...(name && { name }),
       ...(thumbnailId && { thumbnailId }),
@@ -111,11 +111,11 @@ const deleteCategory = async (request: Request) => {
 
   if (!categoryId) throw new Error(PARAMETER_ERROR);
 
-  await checkUserValidation(userId, categoryId);
+  await checkUserValidation(userId, Number(categoryId));
 
   const response = await prisma.category.delete({
     where: {
-      id: +categoryId,
+      id: Number(categoryId),
     },
   });
 
