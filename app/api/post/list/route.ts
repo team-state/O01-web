@@ -38,7 +38,7 @@ const getPostList = async (request: Request) => {
 
   const response = await prisma.post.findMany({
     where: {
-      ...(!((userIdFromSession === userIdFromEmail) !== undefined) && {
+      ...(!(userIdFromSession && userIdFromEmail === userIdFromSession) && {
         isPrivate: false,
       }),
       ...(userIdFromEmail && { user: { id: userIdFromEmail } }),
