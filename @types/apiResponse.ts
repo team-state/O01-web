@@ -1,39 +1,18 @@
-export interface ICategoryListAPIResponse {
-  id: number;
-  name: string;
-  url: string;
-  thumbnailId: string;
-}
+import { Category, Post, Tag } from '@prisma/client';
 
-export interface IPostListAPIResponse {
-  id: number;
-  url: string;
-  userId: string;
-  title: string;
-  description: string;
-  thumbnailId: string;
-  content: string;
-  isPrivate: boolean;
-  categoryId: number | null;
-  createdAt: Date;
-  updateAt: Date;
-  tag: {
-    tagName: string;
-  }[];
-}
+export type ICategoryListAPIResponse = Pick<
+  Category,
+  'id' | 'name' | 'url' | 'thumbnailId'
+>;
 
-export interface IPostDetailAPIResponse {
-  tag: {
-    tagName: string;
-  }[];
-  category: {
-    name: string;
-  } | null;
-  id: number;
-  title: string;
-  content: string;
-}
+export type IPostListAPIResponse = Post & { tag: { tagName: string }[] };
 
-export interface ITagListAPIResponse {
-  name: string;
-}
+export type IPostDetailAPIResponse =
+  | (Pick<Post, 'id' | 'title' | 'content'> & {
+      category: Pick<Category, 'name'> | null;
+    } & {
+      tag: { tagName: string }[];
+    })
+  | null;
+
+export type ITagListAPIResponse = Pick<Tag, 'name'>;
