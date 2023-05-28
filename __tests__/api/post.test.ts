@@ -56,7 +56,7 @@ describe('/api/post test', () => {
     test(`create : parameter [${key}] missing test`, async () => {
       const data = makeNewDataExceptSpecificKeys(createPostData, [key]);
       const request = makeRequestWithBody({
-        url: API_ENDPOINT,
+        url: API_ENDPOINT_POST,
         data,
         method: 'POST',
       });
