@@ -1,1 +1,6 @@
-export const ENV_ERROR_MESSAGE = '환경변수를 확인해 주세요.';
+export const ENV_ERROR_MESSAGE = 'Check environment value.';
+export const AUTH_ERROR_MESSAGE = 'Need login.';
+export const PARAMETER_ERROR = 'Check parameter.';
+export const INVALID_USER = 'Invalid user.';
+export const UNKNOWN_ERROR = 'Unknown error. Check detail Logs.';
+export const URL_PARSING_ERROR = 'Error occurred while parsing the URL params.';
