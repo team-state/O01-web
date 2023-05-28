@@ -14,19 +14,18 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noImplicitAny": true, //명시적이지 않은 'any' 유형으로 표현식 및 선언 사용 시 오류 발생
-    "noUnusedLocals": true, //쓰지않는 지역변수 있으면 에러내기
-    "noUnusedParameters": true, //쓰지않는 파라미터 있으면 에러내기
-    "noImplicitReturns": true, //함수에서 return 빼먹으면 에러내기
-    "noFallthroughCasesInSwitch": true, //switch문 이상하면 에러내기
-    "removeComments": true, //컴파일시 주석제거
-    "strictFunctionTypes": true, //함수파라미터 타입체크 강하게
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
+    "strictFunctionTypes": true,
     "typeRoots": ["node_modules/@types", "@types"],
     "baseUrl": ".",
     "paths": {
       "@libs/server": ["libs/server"],
       "@libs/client": ["libs/client"],
-      "@service/*": ["service/*"],
       "@utils/*": ["utils/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
@@ -34,7 +33,8 @@
       "@store": ["store/index"],
       "@store/*": ["store/*"],
       "@styles/*": ["styles/*"],
-      "@constants/*": ["constants/*"]
+      "@constants/*": ["constants/*"],
+      "@api/*": ["app/api/*"]
     },
     "plugins": [
       {
