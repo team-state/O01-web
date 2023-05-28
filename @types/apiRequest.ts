@@ -1,6 +1,10 @@
 import { Category, Post, User } from '@prisma/client';
 
-export type ICreatePostRequestParams = Omit<Post, 'createdAt' | 'updatedAt'> & {
+export type ICreatePostRequestParams = Omit<
+  Post,
+  'createdAt' | 'updateAt' | 'id' | 'userId' | 'categoryId'
+> & {
+  categoryId?: number;
   tag?: string[];
 };
 

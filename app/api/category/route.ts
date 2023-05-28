@@ -1,4 +1,9 @@
-import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
+import {
+  AUTH_ERROR_MESSAGE,
+  INVALID_USER,
+  PARAMETER_ERROR,
+  UNKNOWN_ERROR,
+} from '@constants/error';
 import {
   prisma,
   withRequest,
@@ -16,6 +21,11 @@ import type {
   ICategoryListAPIResponse,
 } from '@types';
 
+const IS_TEST = process.env.NODE_ENV === 'test';
+const TEST_ID = process.env.TEST_USER_ID;
+
+if (!TEST_ID) throw Error(AUTH_ERROR_MESSAGE);
+
 const checkUserValidation = async (userId: string, categoryId: number) => {
   const category = await prisma.category.findUnique({
     where: { id: categoryId },
@@ -28,7 +38,7 @@ const checkUserValidation = async (userId: string, categoryId: number) => {
 };
 
 const createCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
 
   const { name, thumbnailId, url } =
     await getBodyFromRequest<ICreateCategoryRequestParams>(request);
@@ -52,6 +62,8 @@ const createCategory = async (request: Request) => {
   });
 
   if (!response) throw new Error(UNKNOWN_ERROR);
+
+  return response;
 };
 
 const getCategoryList = async (request: Request) => {
@@ -105,7 +117,7 @@ const updateCategory = async (request: Request) => {
 };
 
 const deleteCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
   const { id: categoryId } =
     getParamFromRequest<IDeleteCategoryRequestParams>(request);
 

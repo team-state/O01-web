@@ -1,4 +1,9 @@
-import { INVALID_USER, PARAMETER_ERROR, UNKNOWN_ERROR } from '@constants/error';
+import {
+  AUTH_ERROR_MESSAGE,
+  INVALID_USER,
+  PARAMETER_ERROR,
+  UNKNOWN_ERROR,
+} from '@constants/error';
 import {
   prisma,
   withRequest,
@@ -14,6 +19,11 @@ import type {
   IUpdatePostRequestParams,
   IPostDetailAPIResponse,
 } from '@types';
+
+const IS_TEST = process.env.NODE_ENV === 'test';
+const TEST_ID = process.env.TEST_USER_ID;
+
+if (!TEST_ID) throw Error(AUTH_ERROR_MESSAGE);
 
 const checkUserValidation = async (userId: string, postId: number) => {
   const post = await prisma.post.findUnique({
@@ -37,7 +47,8 @@ const deleteTagFromPost = async (postId: number) => {
 };
 
 const createPost = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
+
   const {
     url,
     title,
@@ -56,7 +67,8 @@ const createPost = async (request: Request) => {
       description &&
       thumbnailId &&
       content &&
-      String(isPrivate)
+      isPrivate !== undefined &&
+      typeof isPrivate === 'boolean'
     )
   )
     throw new Error(PARAMETER_ERROR);
@@ -101,6 +113,8 @@ const createPost = async (request: Request) => {
   });
 
   if (!response) throw new Error(UNKNOWN_ERROR);
+
+  return response;
 };
 
 const getPost = async (request: Request) => {
@@ -116,6 +130,9 @@ const getPost = async (request: Request) => {
       id: true,
       title: true,
       content: true,
+      description: true,
+      thumbnailId: true,
+      url: true,
       category: {
         select: {
           name: true,
@@ -132,7 +149,9 @@ const getPost = async (request: Request) => {
   });
 
   if (response && response.isPrivate) {
-    const userIdFromSession = await getUserIdFromSession(true);
+    const userIdFromSession = IS_TEST
+      ? TEST_ID
+      : await getUserIdFromSession(true);
     if (response.user.id !== userIdFromSession) throw new Error(INVALID_USER);
   }
 
@@ -140,7 +159,7 @@ const getPost = async (request: Request) => {
 };
 
 const updatePost = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
 
   const {
     postId,
@@ -204,7 +223,7 @@ const updatePost = async (request: Request) => {
 };
 
 const deletePost = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
   const { id: postId } = getParamFromRequest<IDeletePostRequestParams>(request);
 
   if (!postId) throw new Error(PARAMETER_ERROR);
