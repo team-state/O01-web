@@ -26,8 +26,7 @@ export type ICreateCategoryRequestParams = Pick<
   'name' | 'thumbnailId' | 'url'
 >;
 
-export type IGetCategoryRequestParams = Pick<User, 'nickname'> &
-  Partial<Pick<Category, 'url' | 'name'>>;
+export type IGetCategoryRequestParams = Pick<User, 'nickname'>;
 
 export type IUpdateCategoryRequestParams = ICreateCategoryRequestParams & {
   categoryId: number;

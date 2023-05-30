@@ -67,19 +67,15 @@ const createCategory = async (request: Request) => {
 };
 
 const getCategoryList = async (request: Request) => {
-  const { nickname, url, name } =
-    getParamFromRequest<IGetCategoryRequestParams>(request);
+  const { nickname } = getParamFromRequest<IGetCategoryRequestParams>(request);
 
   if (!nickname) throw new Error(PARAMETER_ERROR);
-  if (url && name) throw new Error(PARAMETER_ERROR);
 
   const userId = await getUserIdFromNickname(nickname);
 
   const response = await prisma.category.findMany({
     where: {
       userId,
-      ...(url && { url }),
-      ...(name && { name }),
     },
     select: {
       id: true,
@@ -93,7 +89,7 @@ const getCategoryList = async (request: Request) => {
 };
 
 const updateCategory = async (request: Request) => {
-  const userId = await getUserIdFromSession(true);
+  const userId = IS_TEST ? TEST_ID : await getUserIdFromSession(true);
 
   const { categoryId, name, thumbnailId, url } = await getBodyFromRequest<
     Partial<IUpdateCategoryRequestParams>
