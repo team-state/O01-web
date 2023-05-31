@@ -22,6 +22,11 @@ const getTagList = async (request: Request) => {
     },
     select: {
       name: true,
+      _count: {
+        select: {
+          post: true,
+        },
+      },
     },
   });
 

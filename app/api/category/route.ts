@@ -82,6 +82,11 @@ const getCategoryList = async (request: Request) => {
       name: true,
       thumbnailId: true,
       url: true,
+      _count: {
+        select: {
+          post: true,
+        },
+      },
     },
   });
 
