@@ -2,13 +2,15 @@ import { Category, Post, User } from '@prisma/client';
 
 export type ICreatePostRequestParams = Omit<
   Post,
-  'createdAt' | 'updateAt' | 'id' | 'userId' | 'categoryId'
+  'createdAt' | 'updatedAt' | 'id' | 'userId' | 'categoryId'
 > & {
   categoryId?: number;
   tag?: string[];
 };
 
-export type IGetPostRequestParams = Pick<Post, 'id'>;
+export type IGetPostRequestParams = Partial<
+  Pick<Post, 'url' | 'id'> & Pick<User, 'nickname'>
+>;
 
 export type IGetPostListRequestParams = Partial<
   Pick<User, 'nickname'> &
@@ -19,7 +21,7 @@ export type IUpdatePostRequestParams = ICreatePostRequestParams & {
   postId: number;
 };
 
-export type IDeletePostRequestParams = IGetPostRequestParams;
+export type IDeletePostRequestParams = Pick<Post, 'id'>;
 
 export type ICreateCategoryRequestParams = Pick<
   Category,
