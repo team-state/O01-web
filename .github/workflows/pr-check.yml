@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -26,6 +26,8 @@ jobs:
           echo "CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID" >> .env
           echo "CLOUDFLARE_IMAGE_API_TOKEN=$CLOUDFLARE_IMAGE_API_TOKEN" >> .env
           echo "NEXT_PUBLIC_IMAGE_SERVE_URL=$NEXT_PUBLIC_IMAGE_SERVE_URL" >> .env
+          echo "TEST_USER_ID=$TEST_USER_ID" >> .env
+          echo "TEST_USER_NICKNAME=$TEST_USER_NICKNAME" >> .env
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
@@ -35,10 +37,13 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_IMAGE_API_TOKEN: ${{ secrets.CLOUDFLARE_IMAGE_API_TOKEN }}
           NEXT_PUBLIC_IMAGE_SERVE_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_SERVE_URL }}
-      - name: Test Lint / Build
+          TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
+          TEST_USER_NICKNAME: ${{ secrets.TEST_USER_NICKNAME }}
+      - name: Lint / Test / Build
         run: |
           yarn install --immutable --immutable-cache --check-cache
           yarn lint
+          yarn test
           yarn build
         env:
           CI: true
