@@ -65,6 +65,59 @@ describe('/api/post test', () => {
     });
   }
 
+  describe('search: post detail parameter missing test', () => {
+    const testCases = [
+      {
+        params: { id: 1, nickname: '닉네임', url: 'url' },
+        expectedResult: 400,
+        description: 'id, nickname, url are provided',
+      },
+      {
+        params: { id: 1, nickname: '닉네임' },
+        expectedResult: 400,
+        description: 'id, nickname are provided',
+      },
+      {
+        params: { id: 1, url: 'url' },
+        expectedResult: 400,
+        description: 'id and url are provided',
+      },
+      {
+        params: { nickname: '닉네임' },
+        expectedResult: 400,
+        description: 'only nickname is provided',
+      },
+      {
+        params: { url: 'url' },
+        expectedResult: 400,
+        description: 'only url is provided',
+      },
+      {
+        params: { id: 1 },
+        expectedResult: 200,
+        description: 'only id is provided',
+      },
+      {
+        params: { nickname: '닉네임', url: 'url' },
+        expectedResult: 200,
+        description: 'nickname, url are provided',
+      },
+    ];
+
+    testCases.forEach(({ params, expectedResult, description }) => {
+      test(description, async () => {
+        const request = makeRequestWithQueryParams({
+          url: API_ENDPOINT_POST,
+          data: params,
+          method: 'GET',
+        });
+
+        const response = await getPost(request);
+        expect(response.status).toBe(expectedResult);
+      });
+    });
+  });
+
   test('create post without category and tag / search', async () => {
     const data = makeNewDataExceptSpecificKeys(createPostData, [
       'categoryId',
@@ -83,15 +136,17 @@ describe('/api/post test', () => {
 
     const searchRequest = makeRequestWithQueryParams({
       url: API_ENDPOINT_POST,
-      data: { id: createResponse.data.id },
+      data: {
+        id: createResponse.data.id,
+      },
       method: 'GET',
     });
+    postId = createResponse.data.id;
 
     const searchResponse = await (await getPost(searchRequest)).json();
     expect(searchResponse.success).toBe(true);
     expect(searchResponse.data.category).toBe(null);
     expect(searchResponse.data.tag).toHaveLength(0);
-    postId = createResponse.data.id;
   });
 
   test('make category for test', async () => {

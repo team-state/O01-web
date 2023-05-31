@@ -118,13 +118,24 @@ const createPost = async (request: Request) => {
 };
 
 const getPost = async (request: Request) => {
-  const { id: postId } = getParamFromRequest<IGetPostRequestParams>(request);
+  const { id, url, nickname } =
+    getParamFromRequest<IGetPostRequestParams>(request);
 
-  if (!postId) throw new Error(PARAMETER_ERROR);
+  if ((id && nickname) || (id && url) || (!id && !(url && nickname)))
+    throw new Error(PARAMETER_ERROR);
 
-  const response = await prisma.post.findUnique({
+  const response = await prisma.post.findFirst({
     where: {
-      id: Number(postId),
+      ...(id
+        ? {
+            id: Number(id),
+          }
+        : {
+            user: {
+              nickname,
+            },
+            id,
+          }),
     },
     select: {
       id: true,
