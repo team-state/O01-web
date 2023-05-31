@@ -12,7 +12,7 @@ const withResponse = async <T>(
   try {
     return createResponse<T>(await businessLogic(), 200);
   } catch (e) {
-    console.error(e);
+    if (process.env.NODE_ENV !== 'test') console.error(e);
 
     const errorMessage = e instanceof Error ? e.message : UNKNOWN_ERROR;
 
